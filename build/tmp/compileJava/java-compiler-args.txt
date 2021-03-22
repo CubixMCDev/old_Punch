@@ -1,0 +1,24 @@
+-source
+1.8
+-target
+1.8
+-d
+"D:\\program\\Projet intelIj\\the punch\\build\\classes\\java\\main"
+-encoding
+UTF-8
+-h
+"D:\\program\\Projet intelIj\\the punch\\build\\generated\\sources\\headers\\java\\main"
+-g
+-sourcepath
+""
+-proc:none
+-s
+"D:\\program\\Projet intelIj\\the punch\\build\\generated\\sources\\annotationProcessor\\java\\main"
+-XDuseUnsharedTable=true
+-classpath
+"D:\\program\\Projet intelIj\\the punch\\libs\\spigot.jar;D:\\program\\Projet intelIj\\the punch\\build\\classes\\java\\main"
+-parameters
+"D:\\program\\Projet intelIj\\the punch\\src\\main\\java\\eu\\cubixmc\\punch\\object\\Game.java"
+"D:\\program\\Projet intelIj\\the punch\\src\\main\\java\\eu\\cubixmc\\punch\\Punch.java"
+"D:\\program\\Projet intelIj\\the punch\\src\\main\\java\\eu\\cubixmc\\punch\\scoreboard\\PersonalScoreboard.java"
+"D:\\program\\Projet intelIj\\the punch\\src\\main\\java\\eu\\cubixmc\\punch\\scoreboard\\ScoreboardManager.java"

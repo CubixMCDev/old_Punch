@@ -1,0 +1,8 @@
+name: Punch
+version: 1.0
+author: LouShunt
+main: eu.cubixmc.punch.Punch
+commands:
+    start:
+        description: "Commencer la partie"
+        permission: "punch.start"

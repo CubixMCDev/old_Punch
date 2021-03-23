@@ -2,6 +2,7 @@ rule:
   min-y: 25
   min-players: 2
   life: 3
+  strenght-per-punch: 5
 
 location:
   waiting:

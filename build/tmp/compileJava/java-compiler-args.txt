@@ -18,7 +18,9 @@ UTF-8
 -classpath
 "D:\\program\\Projet intelIj\\the punch\\libs\\spigot.jar;D:\\program\\Projet intelIj\\the punch\\build\\classes\\java\\main"
 -parameters
+"D:\\program\\Projet intelIj\\the punch\\src\\main\\java\\eu\\cubixmc\\punch\\listenner\\PlayerListenner.java"
 "D:\\program\\Projet intelIj\\the punch\\src\\main\\java\\eu\\cubixmc\\punch\\object\\Game.java"
 "D:\\program\\Projet intelIj\\the punch\\src\\main\\java\\eu\\cubixmc\\punch\\Punch.java"
 "D:\\program\\Projet intelIj\\the punch\\src\\main\\java\\eu\\cubixmc\\punch\\scoreboard\\PersonalScoreboard.java"
 "D:\\program\\Projet intelIj\\the punch\\src\\main\\java\\eu\\cubixmc\\punch\\scoreboard\\ScoreboardManager.java"
+"D:\\program\\Projet intelIj\\the punch\\src\\main\\java\\eu\\cubixmc\\punch\\task\\WaitingTask.java"

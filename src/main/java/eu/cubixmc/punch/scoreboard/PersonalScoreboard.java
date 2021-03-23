@@ -1,6 +1,7 @@
 package eu.cubixmc.punch.scoreboard;
 
 import eu.cubixmc.punch.Punch;
+import eu.cubixmc.punch.object.Game;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -30,18 +31,18 @@ public class PersonalScoreboard {
     public void reloadData(){}
 
     public void setLines(String ip){
-        objectiveSign.setDisplayName(ChatColor.GRAY+"- "+ChatColor.GOLD+"Dé à Coudre"+ChatColor.DARK_GRAY+" -");
+        objectiveSign.setDisplayName(ChatColor.DARK_GRAY+"- "+ChatColor.GOLD+"Punch"+ChatColor.DARK_GRAY+" -");
 
-        /*objectiveSign.setLine(0, "§8» §7" + currentDate);
+        objectiveSign.setLine(0, "§8» §7" + currentDate);
 
         if(main.getGame().getState() == Game.State.WAITING) {
             objectiveSign.setLine(1, "§1");
-            objectiveSign.setLine(2, "§8» §7Joueurs: §e" + Bukkit.getOnlinePlayers().size() + "§6/§e" + main.getGame().getMaxPlayer());
+            objectiveSign.setLine(2, "§8» §7Joueurs: §e" + Bukkit.getOnlinePlayers().size() + "§6/§e" + Bukkit.getMaxPlayers());
             objectiveSign.setLine(3, "§8» §7Attente de joueurs...");
             objectiveSign.setLine(4, "§2");
             objectiveSign.setLine(5, "§8» " + ip);
         }else if(main.getGame().getState() == Game.State.PLAYING){
-            if(jumper == null)
+            /*if(jumper == null)
                 jumper = main.getGame().getJumper(player);
 
 
@@ -60,8 +61,8 @@ public class PersonalScoreboard {
             objectiveSign.setLine(2, "§8» §7Gagnant: §e" + main.getGame().getJumperList().get(0).getPlayer().getName());
             objectiveSign.setLine(3, "§8» §7Partie terminé...");
             objectiveSign.setLine(4, "§2");
-            objectiveSign.setLine(5, "§8» " + ip);
-        }*/
+            objectiveSign.setLine(5, "§8» " + ip);*/
+        }
 
         objectiveSign.updateLines();
     }

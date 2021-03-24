@@ -39,7 +39,7 @@ public class Utils {
      * @param server The server name
      * @param main  Main of your plugin
      */
-    public void movePlayer(Player player, String server, JavaPlugin main) {
+    public static void movePlayer(Player player, String server, JavaPlugin main) {
         ByteArrayDataOutput out = ByteStreams.newDataOutput();
         out.writeUTF("Connect");
         out.writeUTF(server);

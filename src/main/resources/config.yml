@@ -3,6 +3,8 @@ rule:
   min-players: 2
   life: 3
   strenght-per-punch: 5
+  min-strenght: 1
+  max-strenght: 2.5
 
 location:
   waiting:

@@ -2,6 +2,7 @@ package eu.cubixmc.punch.scoreboard;
 
 import eu.cubixmc.punch.Punch;
 import eu.cubixmc.punch.object.Game;
+import eu.cubixmc.punch.object.Puncher;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
@@ -42,26 +43,25 @@ public class PersonalScoreboard {
             objectiveSign.setLine(4, "§2");
             objectiveSign.setLine(5, "§8» " + ip);
         }else if(main.getGame().getState() == Game.State.PLAYING){
-            /*if(jumper == null)
-                jumper = main.getGame().getJumper(player);
-
-
             objectiveSign.setLine(1, "§1");
-            objectiveSign.setLine(2, "§8» §7Joueurs: §e" + main.getGame().getJumperList().size() + "§6/§e" + main.getGame().getJumperColorList().size());
-            objectiveSign.setLine(3, "§8» §7Joueur qui saute: §e" + main.getGame().getCurrentJumper().getPlayer().getName());
-            if(jumper != null) {
-                objectiveSign.setLine(4, "§c");
-                objectiveSign.setLine(5, "§8» §7Vies: §e" + jumper.getLife());
+            objectiveSign.setLine(2, "§8» §7Joueurs: §e" + main.getGame().getPuncherList().size() + "§6/§e" + main.getGame().getPlayerCount());
+            objectiveSign.setLine(3, "§8» §7Nombre de bonus: §e0");
+            objectiveSign.setLine(4, "§c");
+            if(main.getGame().containsPlayer(player)) {
+                Puncher punch = main.getGame().getPuncher(player);
+                objectiveSign.setLine(5, "§8» §7Vies: §e"+punch.getLife());
+                objectiveSign.setLine(6, "§8» §7Force: §e"+punch.getStrenght()+"§6%");
+                objectiveSign.setLine(7, "§8» §7Kill: §e"+punch.getKill());
+                objectiveSign.setLine(8, "§a");
             }
-            objectiveSign.setLine(6,"§8» §7Round: §e"+main.getGame().getRound());
-            objectiveSign.setLine(7, "§2");
-            objectiveSign.setLine(8, "§8» " + ip);
+            objectiveSign.setLine(9, "§8» " + ip);
+
         }else if(main.getGame().getState() == Game.State.ENDING){
             objectiveSign.setLine(1, "§1");
-            objectiveSign.setLine(2, "§8» §7Gagnant: §e" + main.getGame().getJumperList().get(0).getPlayer().getName());
+            objectiveSign.setLine(2, "§8» §7Gagnant: §e" + main.getGame().getPuncherList().iterator().next());
             objectiveSign.setLine(3, "§8» §7Partie terminé...");
             objectiveSign.setLine(4, "§2");
-            objectiveSign.setLine(5, "§8» " + ip);*/
+            objectiveSign.setLine(5, "§8» " + ip);
         }
 
         objectiveSign.updateLines();

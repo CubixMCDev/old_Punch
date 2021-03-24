@@ -1,5 +1,6 @@
 package eu.cubixmc.punch.object;
 
+import org.bukkit.Sound;
 import org.bukkit.entity.Player;
 
 public class Puncher {
@@ -7,10 +8,11 @@ public class Puncher {
     private static byte strenghtGain;
 
     private Player player;
-    private int life;
-    private int kill;
+    private int life, kill;
     private Puncher lastPunch;
     private byte strenght;
+    private long startStrenght;
+    private boolean isStrenght;
 
     /**
      * Create a puncher
@@ -44,8 +46,17 @@ public class Puncher {
     public void punch(Puncher puncher){
         this.lastPunch = puncher;
 
-        if((puncher.strenght+Puncher.strenghtGain) < 100)
+        if(puncher.strenght < 100 && !puncher.isStrenght) {
             puncher.strenght += Puncher.strenghtGain;
+            puncher.getPlayer().playSound(puncher.getPlayer().getLocation(), Sound.ORB_PICKUP,10,1);
+            if(puncher.strenght > 100)
+                puncher.strenght = 100;
+            double xp = ((double)puncher.strenght)/100;
+            puncher.getPlayer().setExp((float) xp);
+            puncher.getPlayer().setLevel(puncher.getStrenght());
+        }
+
+
     }
 
     /**
@@ -86,6 +97,31 @@ public class Puncher {
      */
     public byte getStrenght(){
         return strenght;
+    }
+
+    public void setStrenght(byte strenght){
+        this.strenght = strenght;
+    }
+
+    public void activeStrenght(){
+        this.isStrenght = true;
+        this.startStrenght = System.currentTimeMillis();
+    }
+
+    public void disableStrenght(){
+        this.isStrenght = false;
+    }
+
+    public long getStartStrenghtTime(){
+        return startStrenght;
+    }
+
+    public boolean isStrenghtActive(){
+        return isStrenght;
+    }
+
+    public Puncher getLastPuncher(){
+        return lastPunch;
     }
 
     /**

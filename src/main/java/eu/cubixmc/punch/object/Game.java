@@ -1,6 +1,8 @@
 package eu.cubixmc.punch.object;
 
 import eu.cubixmc.punch.Punch;
+import eu.cubixmc.punch.task.EndingTask;
+import eu.cubixmc.punch.task.PlayingTask;
 import eu.cubixmc.punch.task.WaitingTask;
 import eu.cubixmc.punch.utils.Utils;
 import org.bukkit.*;
@@ -22,13 +24,13 @@ public class Game {
     private Punch main;
     private HashMap<String, Puncher> puncherList;
     private State state;
+    private byte playerCount;
 
     /* RULE */
-    private final int MINPLAYER;
     private final ArrayList<Location> SPAWNLIST;
     private final Location WAITINGLOC;
-    private final int MINY;
-    private final int LIFE;
+    private final int MINPLAYER, MINY, LIFE;
+    private final double MINSTRENGHT, MAXSTRENGHT;
 
     /**
      * Create a new game
@@ -44,6 +46,8 @@ public class Game {
         this.MINY = main.getConfig().getInt("rule.min-y");
         this.LIFE = main.getConfig().getInt("rule.life");
         this.WAITINGLOC = Utils.loadLocation("location.waiting", main);
+        this.MINSTRENGHT = main.getConfig().getDouble("rule.min-strenght");
+        this.MAXSTRENGHT = main.getConfig().getDouble("rule.max-strenght");
         //Load spawnlist
         this.SPAWNLIST = new ArrayList<>();
         for(String key: main.getConfig().getConfigurationSection("location.spawn").getKeys(false))
@@ -58,6 +62,7 @@ public class Game {
         for(Player player: Bukkit.getOnlinePlayers()){
             setWaitingInventory(player);
             player.teleport(WAITINGLOC);
+            main.getScoreboardManager().onLogin(player);
         }
 
         WaitingTask wait = new WaitingTask(this,30);
@@ -65,8 +70,6 @@ public class Game {
     }
 
     public void setPlaying(){
-        this.state = State.PLAYING;
-
         for(Player player: Bukkit.getOnlinePlayers()){
             Puncher puncher = new Puncher(player,LIFE);
             puncherList.put(player.getName(),puncher);
@@ -74,10 +77,26 @@ public class Game {
             setPlayingInventory(player);
             player.teleport(getRandomSpawn());
         }
+
+        playerCount = (byte) puncherList.size();
+
+        PlayingTask playingTask = new PlayingTask(main);
+        playingTask.runTaskTimer(main,20,20);
+
+
+        this.state = State.PLAYING;
     }
 
     public void setEnding(){
         this.state = State.ENDING;
+
+        for(Player player: Bukkit.getOnlinePlayers()) {
+            setEndingInventory(player);
+            Utils.sendTitle(player,ChatColor.GOLD+puncherList.keySet().iterator().next(),ChatColor.YELLOW+"est le grand vainqueur !",1,60,5);
+        }
+
+        EndingTask end = new EndingTask(main,10);
+        end.runTaskTimer(main,20,20);
     }
 
     /**
@@ -113,6 +132,44 @@ public class Game {
         return puncherList.get(player.getName());
     }
 
+    public int getMinY(){
+        return MINY;
+    }
+
+    public void kill(Puncher victim){
+        if(victim.getLastPuncher() == null)
+            sendMessage(victim.getPlayer().getName()+" est mort!");
+        else
+            sendMessage(victim.getPlayer().getName()+" a été tué par "+victim.getLastPuncher().getPlayer().getName()+"!");
+        victim.die();
+        victim.getPlayer().teleport(getRandomSpawn());
+        if(victim.isDead()){
+            sendMessage(victim.getPlayer().getName()+" a été éliminé!");
+            setEndingInventory(victim.getPlayer());
+            removePuncher(victim);
+            victim.getPlayer().playSound(victim.getPlayer().getLocation(),Sound.ENDERDRAGON_GROWL,10,1);
+        }else {
+            main.getGame().setPlayingInventory(victim.getPlayer());
+        }
+    }
+
+    public void removePuncher(Puncher puncher){
+        if(!puncherList.containsKey(puncher.getPlayer().getName())) return;
+
+        puncherList.remove(puncher.getPlayer().getName());
+
+        if(puncherList.size() == 1)
+            setEnding();
+    }
+
+    /**
+     * Get number of player at the beginning
+     * @return number of player at the beginning
+     */
+    public byte getPlayerCount(){
+        return playerCount;
+    }
+
     /**
      * Check if player is in the game
      * @param player The player
@@ -131,6 +188,19 @@ public class Game {
         return this.SPAWNLIST.get(r.nextInt(SPAWNLIST.size()));
     }
 
+    public double getMinStrenght() {
+        return MINSTRENGHT;
+    }
+
+    public double getMaxStrenght() {
+        return MAXSTRENGHT;
+    }
+
+    public void sendMessage(String message){
+        for(Player player: Bukkit.getOnlinePlayers())
+            player.sendMessage(ChatColor.YELLOW+"CubixMC "+ChatColor.GOLD+"» "+ChatColor.GRAY+message);
+    }
+
     /**
      * Set waiting inventory to a player
      * @param player
@@ -140,6 +210,9 @@ public class Game {
         player.setMaxHealth(20);
         player.setHealth(player.getMaxHealth());
         player.setFoodLevel(20);
+        player.setExp(0);
+        player.setLevel(0);
+        player.setAllowFlight(false);
         player.setGameMode(GameMode.ADVENTURE);
 
         //Règlement
@@ -148,7 +221,7 @@ public class Game {
         ruleM.setDisplayName(ChatColor.GOLD+"Règlement");
         ruleM.setLore(Arrays.asList(ChatColor.YELLOW+"Clic droit"));
         ruleM.addPage("Dans Punch, vous devez utiliser vos armes Knockback pour faire sortir vos adversaires de l'arène!"+
-                "Il y a deux armes: "+ChatColor.BOLD+"Bâton"+ChatColor.RESET+": combattez au corps à corps avec ce bâton!"+
+                " Il y a deux armes:              "+ChatColor.BOLD+"Bâton"+ChatColor.RESET+": combattez au corps à corps avec ce bâton!"+
                 ChatColor.BOLD+"Arc"+ChatColor.RESET+": Faites attention à ces flèches, elles sont puissantes!");
         rule.setItemMeta(ruleM);
 
@@ -181,6 +254,8 @@ public class Game {
         ItemMeta stickM = stick.getItemMeta();
         stickM.addEnchant(Enchantment.DURABILITY,1,true);
         stickM.addItemFlags(ItemFlag.HIDE_ENCHANTS);
+        stickM.setDisplayName(ChatColor.GOLD+"Activer force");
+        stickM.setLore(Arrays.asList(ChatColor.YELLOW+"Clic droit"));
 
         stick.setItemMeta(stickM);
         player.getInventory().setItem(0,stick);
@@ -198,6 +273,27 @@ public class Game {
 
         //arrow
         player.getInventory().setItem(17,new ItemStack(Material.ARROW));
+
+        player.updateInventory();
+    }
+
+    public void setEndingInventory(Player player){
+        player.getInventory().clear();
+        player.setMaxHealth(20);
+        player.setHealth(player.getMaxHealth());
+        player.setFoodLevel(20);
+        player.setExp(0);
+        player.setLevel(0);
+        player.setGameMode(GameMode.SPECTATOR);
+
+        //Quit
+        ItemStack quit = new ItemStack(Material.BED);
+        ItemMeta quitM = quit.getItemMeta();
+        quitM.setDisplayName(ChatColor.RED+"Quitter");
+        quitM.setLore(Arrays.asList(ChatColor.YELLOW+"Clic droit"));
+        quit.setItemMeta(quitM);
+
+        player.getInventory().setItem(8,quit);
 
         player.updateInventory();
     }
